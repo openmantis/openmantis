@@ -1,6 +1,6 @@
 {
 	"name": "@openmantis/openmantis",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "OpenMantis is a small local-model orchestration layer for caching, routing, and prompt budgeting.",
 	"main": "src/index.js",
 	"bin": {
