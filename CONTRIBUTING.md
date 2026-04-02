@@ -4,11 +4,11 @@ Thank you for contributing to OpenMantis!
 
 ## How to Contribute
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Make your changes.
+1. Open or link an issue before starting larger work.
+2. Fork the repository or create a branch in the main repo.
+3. Make the smallest change that solves the problem.
 4. Add or update tests when behavior changes.
-5. Open a pull request.
+5. Open a pull request and describe the user-facing impact.
 
 ## Development Notes
 
@@ -18,15 +18,20 @@ Thank you for contributing to OpenMantis!
   - `src/runtimes` (adapters for local runtimes like Ollama / Foundry Local)
   - `src/platform` (platform-specific helpers)
 - Keep public APIs consistent and prefer small, focused changes.
+- Avoid adding dependencies unless they materially reduce complexity or improve correctness.
+- Prefer deterministic tests that do not require a live runtime unless explicitly marked as integration coverage.
 
 ## Testing
 
-Run `npm test` once tests are implemented for the relevant modules.
+Run `npm test` before opening a PR.
+
+If you add an integration test that depends on a local runtime, make it opt-in and keep the default suite offline.
 
 ## Code Style
 
-- Follow existing code patterns in the repository.
-- Use clear naming and keep modules cohesive.
+- Follow the existing CommonJS and single-quote style used in the repository.
+- Keep modules cohesive and avoid broad refactors in feature PRs.
+- Update docs when you change behavior that users will see.
 
 ## Code of Conduct
 

@@ -13,10 +13,18 @@ It focuses on reducing memory and storage usage through caching, prompt tokeniza
 
 ## Getting Started
 
-This repository currently contains scaffolding. As the CLI and SDK mature, you will be able to:
+The current slice includes a working CLI, disk-backed cache, request router, and local runtime adapters.
 
-- Run commands via the `bin/openmantis.js` entrypoint
-- Import OpenMantis as a library from `src/index.js`
+Try it with:
+
+```bash
+npm test
+node bin/openmantis.js run "hello world"
+```
+
+The `run` command expects a reachable local runtime such as Ollama or Foundry Local.
+
+You can also import OpenMantis as a library from `src/index.js`.
 
 ## Configuration
 
@@ -30,8 +38,8 @@ Common knobs:
 
 ## Development
 
-- Use `npm test` once tests are implemented
-- Keep changes small and add coverage for core logic (router, cache, tokenization, and runtime adapters)
+- Use `npm test` to run the built-in test suite.
+- Keep changes small and add coverage for core logic (router, cache, tokenization, and runtime adapters).
 
 ## Security
 
