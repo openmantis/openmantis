@@ -1,0 +1,19 @@
+# Node
+node_modules/
+
+# Build/output
+dist/
+build/
+.DS_Store
+
+# Local env
+.env.local
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Caches
+.openmantis/
+
