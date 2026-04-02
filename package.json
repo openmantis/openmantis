@@ -1,10 +1,17 @@
 {
-	"name": "openmantis",
+	"name": "@openmantis/openmantis",
 	"version": "0.1.0",
 	"description": "OpenMantis is a small local-model orchestration layer for caching, routing, and prompt budgeting.",
 	"main": "src/index.js",
 	"bin": {
 		"openmantis": "./bin/openmantis.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/openmantis/openmantis.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
 	},
 	"scripts": {
 		"test": "node --test"
