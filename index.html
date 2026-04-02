@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="OpenMantis is a local-model orchestration layer for caching, routing, token budgeting, and runtime adapters.">
+    <title>OpenMantis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08111f;
+        --bg-elevated: rgba(11, 18, 33, 0.84);
+        --panel: rgba(17, 28, 50, 0.82);
+        --panel-border: rgba(130, 168, 255, 0.18);
+        --text: #eef3ff;
+        --muted: #a8b3d8;
+        --accent: #7df9c7;
+        --accent-strong: #79a6ff;
+        --accent-warm: #ffd36e;
+        --shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(121, 166, 255, 0.18), transparent 32%),
+          radial-gradient(circle at 85% 15%, rgba(125, 249, 199, 0.18), transparent 30%),
+          radial-gradient(circle at bottom right, rgba(255, 211, 110, 0.12), transparent 24%),
+          linear-gradient(180deg, #0b1324 0%, #08111f 100%);
+        color: var(--text);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        opacity: 0.35;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 60px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background:
+          linear-gradient(135deg, rgba(125, 249, 199, 0.95), rgba(121, 166, 255, 0.95));
+        box-shadow: 0 16px 36px rgba(121, 166, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border-radius: 11px;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+      }
+
+      .brand-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .topnav {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .topnav a {
+        text-decoration: none;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 26px;
+        padding: 34px;
+        border: 1px solid var(--panel-border);
+        border-radius: 32px;
+        background: linear-gradient(180deg, rgba(19, 29, 52, 0.92), rgba(10, 16, 29, 0.88));
+        box-shadow: var(--shadow);
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -8% -30% auto;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(125, 249, 199, 0.16), transparent 68%);
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 6px rgba(125, 249, 199, 0.08);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(3rem, 6vw, 5.6rem);
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+        max-width: 9ch;
+      }
+
+      .lede {
+        margin: 22px 0 0;
+        max-width: 60ch;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 13px 18px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        border: 1px solid transparent;
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #06101e;
+      }
+
+      .button.secondary {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+      }
+
+      .stats {
+        display: grid;
+        gap: 14px;
+        align-content: start;
+      }
+
+      .stat-card {
+        padding: 18px;
+        border-radius: 20px;
+        background: var(--bg-elevated);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .stat-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.76rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .stat-value {
+        margin-top: 10px;
+        font-size: 1.1rem;
+        line-height: 1.5;
+      }
+
+      .sections {
+        display: grid;
+        gap: 22px;
+        margin-top: 22px;
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 22px;
+        border-radius: 24px;
+        background: rgba(11, 18, 33, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.18);
+      }
+
+      .card h2,
+      .card h3 {
+        margin: 0 0 10px;
+      }
+
+      .card p,
+      .card li {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .code-block {
+        margin: 0;
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: #07101f;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: auto;
+        font-family: "IBM Plex Mono", monospace;
+        color: #d9e6ff;
+        line-height: 1.65;
+      }
+
+      .two-up {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-warm);
+      }
+
+      @media (max-width: 920px) {
+        .hero,
+        .section-grid,
+        .two-up {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100% - 20px, 1120px);
+          padding-top: 18px;
+        }
+
+        .hero,
+        .card {
+          padding: 20px;
+          border-radius: 22px;
+        }
+
+        h1 {
+          font-size: clamp(2.5rem, 15vw, 4rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name">OpenMantis</span>
+        </a>
+        <nav class="topnav" aria-label="Primary">
+          <a href="#features">Features</a>
+          <a href="#usage">Usage</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#github-pages">GitHub Pages</a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div>
+            <div class="eyebrow">Local model orchestration</div>
+            <h1>Route, cache, and budget local AI requests.</h1>
+            <p class="lede">
+              OpenMantis is a small Node.js tool and SDK that sits between your app and local runtimes like Ollama or Foundry Local. It trims repeat work with caching, keeps prompts within token budgets, and reuses context from local files when you need it.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="#usage">Quick start</a>
+              <a class="button secondary" href="#architecture">Read architecture</a>
+            </div>
+          </div>
+
+          <div class="stats" aria-label="Project highlights">
+            <div class="stat-card">
+              <div class="stat-label">Runtime adapters</div>
+              <div class="stat-value">Ollama and Foundry Local share a single chat contract.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Cache</div>
+              <div class="stat-value">Disk-backed responses reduce repeated calls across sessions.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Budgeting</div>
+              <div class="stat-value">Prompt size is checked before requests are sent to a model.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="sections" id="features">
+          <div class="section-grid">
+            <article class="card">
+              <h2>Features</h2>
+              <ul>
+                <li>Runtime adapters for local model servers.</li>
+                <li>Caching to avoid recomputation across sessions.</li>
+                <li>Token estimation and prompt budgeting helpers.</li>
+                <li>Directory indexing and lightweight memory storage.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>What ships now</h2>
+              <ul>
+                <li>A working CLI entrypoint.</li>
+                <li>Deterministic tests for the core modules.</li>
+                <li>GitHub Pages-ready static landing page.</li>
+                <li>Contributor docs, templates, and CI.</li>
+              </ul>
+            </article>
+            <article class="card" id="github-pages">
+              <h2>GitHub Pages</h2>
+              <p>
+                Put this repository on GitHub Pages from the root branch or the docs folder, and GitHub will serve this <code>index.html</code> as the landing page.
+              </p>
+              <a class="pill" href="#usage">Deploy from repository settings</a>
+            </article>
+          </div>
+
+          <div class="two-up">
+            <article class="card" id="usage">
+              <h2>Quick start</h2>
+              <p>Use the CLI locally or import the package from Node.js.</p>
+              <pre class="code-block"><code>npm test
+node bin/openmantis.js run "hello world"</code></pre>
+            </article>
+
+            <article class="card" id="architecture">
+              <h2>Architecture</h2>
+              <p>
+                Requests flow through a router that normalizes messages, checks the token budget, looks up a cache key, and then dispatches to a runtime adapter only when needed.
+              </p>
+              <p>
+                The runtime adapters speak the same high-level chat interface so additional backends can be added without changing the CLI shape.
+              </p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>OpenMantis</span>
+        <span>Static landing page for GitHub Pages</span>
+      </footer>
+    </div>
+  </body>
+</html>
